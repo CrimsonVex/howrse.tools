@@ -19,9 +19,7 @@ input[type="button"]
 
 body
 {
-   background-image: url("http://www.howrse.com/media/equideo/image/chevaux/console/sauvage/sorraia-background-image.jpg");
-   background-repeat: no-repeat;
-   background-color: #4d530b;
+   background-color: #fff;
 }
 
 div.background
