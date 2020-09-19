@@ -10,7 +10,7 @@
 	  ga('create', 'UA-59396893-1', 'auto');
 	  ga('send', 'pageview');
 	</script>
-	<link href='http://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
    <link rel="stylesheet" type="text/css" href="style.css">
 	<script src="jquery.js"></script>
 </head>
@@ -175,7 +175,7 @@
                         $.ajax(
                         {
                            type: "POST"
-                           ,url: "http://" + serverURL + "/classements/chevaux?mode=potential"
+                           ,url: "https://" + serverURL + "/classements/chevaux?mode=potential"
                            ,success: function(html) {
                               var rObj = JSON.parse(html);
                               var j = $(rObj.content);
