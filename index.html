@@ -161,7 +161,8 @@
                   
                   function getTopGP()
                   {
-                     server = $(this).html(), serverURL;
+                     var serverURL;
+                     server = $(this).html();
                      
                      if (server == "INT")   serverURL = 'www.howrse.com';
                      if (server == "AU")    serverURL = 'au.howrse.com';
