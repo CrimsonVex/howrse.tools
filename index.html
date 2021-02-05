@@ -176,6 +176,7 @@
                         $.ajax(
                         {
                            type: "POST"
+                           ,crossOrigin: true
                            ,url: "https://" + serverURL + "/classements/chevaux?mode=potential"
                            ,success: function(html) {
                               var rObj = JSON.parse(html);
