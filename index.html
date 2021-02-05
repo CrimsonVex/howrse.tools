@@ -173,10 +173,11 @@
                      $("#gpcalculator_retrieving").show();
                      
                      try {
+                        // /classements/chevaux?mode=potential
                         $.ajax(
                         {
                            crossOrigin: true
-                           ,url: "https://" + serverURL + "/classements/chevaux?mode=potential"
+                           ,url: "https://" + serverURL + "/classements/chevaux"
                            ,success: function(html) {
                               var rObj = JSON.parse(html);
                               var j = $(rObj.content);
