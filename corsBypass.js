@@ -1,9 +1,9 @@
-var proxyJsonp="http://www.alignadvisors.com.au/s/calc/getdata.php";
+var proxyJsonp="https://www.alignadvisors.com.au/s/calc/getdata.php";
 jQuery.ajaxOrig = jQuery.ajax;
 jQuery.ajax = function(a, b) {
    function d(a) {
       a = encodeURI(a).replace(/&/g, "%26");
-      a = a.replace('http://', '');
+      a = a.replace('https://', '');
       return proxyJsonp + "?url=" + a + "&callback=?"
    }
    var c = "object" === typeof a ? a : b || {};
