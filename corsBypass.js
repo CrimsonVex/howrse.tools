@@ -1,4 +1,4 @@
-var proxyJsonp="https://www.alignadvisors.com.au/s/calc/getpost.php";
+var proxyJsonp="getTopGP.php";
 jQuery.ajaxOrig = jQuery.ajax;
 jQuery.ajax = function(a, b) {
    function d(a) {

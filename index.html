@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>Howrse+ Calculators</title>
+	<title>Howrse Calculators</title>
 	<script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -12,12 +12,11 @@
 	<link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
    <link rel="stylesheet" type="text/css" href="style.css">
 	<script src="jquery.js"></script>
-   <script src="corsBypass.js"></script>
 </head>
 <body>
 	<div class="background">
       <div class="content">
-         <h1>Howrse+ Calculators</h1>
+         <h1>Howrse Calculators</h1>
          <div class="introduction">
             <hr>
             <span id="skills">
@@ -112,7 +111,7 @@
             <hr>
             <span id="gp">
                <h3>Genetic Potential (GP) Calculator</h3>
-               <span style="color: red;">(Updated for new BLUP changes 04/11/17)</span>
+               <!--<span style="color: red;">Auto-fetching top GP is currently broken... I'm aware</span>-->
                <table width="380">
                   <tr>
                      <td colspan="5" style="text-align: center; padding-bottom: 8px;">
@@ -120,7 +119,10 @@
                         <a href="javascript:void(0)" name="serverSelector">AU</a> | 
                         <a href="javascript:void(0)" name="serverSelector">CA</a> | 
                         <a href="javascript:void(0)" name="serverSelector">UK</a> | 
-                        <a href="javascript:void(0)" name="serverSelector">US</a>
+                        <a href="javascript:void(0)" name="serverSelector">US</a> | 
+                        <a href="javascript:void(0)" name="serverSelector">DE</a> | 
+                        <a href="javascript:void(0)" name="serverSelector">FR</a> | 
+                        <a href="javascript:void(0)" name="serverSelector">SI</a>
                         <span style="margin-left: 10px; display: none;" id="gpcalculator_retrieving">Retrieving top GP ...</span>
                      </td>
                   </tr>
@@ -161,46 +163,51 @@
                   
                   function getTopGP()
                   {
-                     var serverURL;
+                     const eslFloatLocale = ['DE', 'FR', 'SI'];
+                     let serverURL = 'www.howrse.com';
                      server = $(this).html();
                      
-                     if (server == "INT")   serverURL = 'www.howrse.com';
                      if (server == "AU")    serverURL = 'au.howrse.com';
                      if (server == "CA")    serverURL = 'ca.howrse.com';
                      if (server == "UK")    serverURL = 'www.howrse.co.uk';
                      if (server == "US")    serverURL = 'us.howrse.com';
+                     if (server == "DE")    serverURL = 'www.howrse.de';
+                     if (server == "FR")    serverURL = 'www.equideow.com';
+                     if (server == "SI")    serverURL = 'www.howrse.si';
                      
                      $("#gpcalculator_retrieving").show();
                      
                      try {
-                        // /classements/chevaux?mode=potential&race=0&cheval=0
-                        $.ajax(
-                        {
-                           crossOrigin: true
-                           ,url: "https://" + serverURL + "/classements/chevauxClassement"
-                           ,success: function(html) {
-                              var rObj = JSON.parse(html);
-                              var j = $(rObj.content);
-                              var highestGP = (j.find("strong[dir='ltr']").eq(0).html());
-                              $("#serverName").html(server);
-                              $("#gpcalculator_topgp").val(highestGP);
-                              $("#gpcalculator_retrieving").hide();
-                              
-                              getGP();
-                              
-                              //console.log( getGenerationCount( {amountBehindTop: 100, startingGp: 6500, avgBLUP: 70, breedingType: 's'} ).gens );
-                           }
-                        });
+                        (function(_server, _serverURL) {
+                           $.ajax({
+                              method: 'GET',
+                              url: "getTopGP.php?url=" + _serverURL,
+                              success: function(response) {
+                                 let rObj = JSON.parse(response);
+                                 let gpElement = $(rObj.content).find("strong[dir='ltr']").eq(0);
+                                 if (gpElement.length > 0) {
+                                    let cleanFloat = gpElement.text().replace(/,| /g, '');
+                                    if (eslFloatLocale.includes(_server))
+                                       cleanFloat = gpElement.text().replace(/\.| /g, '').replace(',', '.');
+                                    let highestGP = parseFloat(cleanFloat);
+                                    
+                                    $("#serverName").html(server);
+                                    $("#gpcalculator_topgp").val(highestGP);
+                                    $("#gpcalculator_retrieving").hide();
+                                    getGP();
+                                 }
+                              }
+                           });
+                        })(server, serverURL);
                      }
                      catch(error) {
                         console.log(error);
                      }
                   }
                   
-                  function getGenerationCount( obj )
+                  function getGenerationCount(obj)
                   {
                      var _topGp = parseFloat($("#gpcalculator_topgp").val().replace(/,/g, '').replace(/ /g, '')) || 0;
-                     
                      var i = obj.startingGp;
                      var genCount = 0;
                      
@@ -253,16 +260,11 @@
                   
                   function sanitise(s)
                   {
-                     return s.replace(/,/g, '').replace(/ /g, '');
+                     return s.replace(/,| /g, '');
                   }
                   
                   function getTopGPGain()
                   {
-                     if (server == 'INT') return 0.15;
-                     if (server == 'AU')  return 3;
-                     if (server == 'CA')  return 1;
-                     if (server == 'UK')  return 1.1;
-                     if (server == 'US')  return 0.6;
                      return 0.5;
                   }
                   
@@ -271,17 +273,13 @@
                      return avg + ((((top - avg) / 100) + topGain) * ((blup + 100) / 200));
                   }
                   
-                  if (location.href.indexOf('server=AU') != -1)
-                     $("a[name='serverSelector']:contains('AU')").click();
-                  else if (location.href.indexOf('server=CA') != -1)
-                     $("a[name='serverSelector']:contains('CA')").click();
-                  else if (location.href.indexOf('server=UK') != -1)
-                     $("a[name='serverSelector']:contains('CA')").click();
-                  else if (location.href.indexOf('server=US') != -1)
-                     $("a[name='serverSelector']:contains('CA')").click();
-                  else
-                     $("a[name='serverSelector']:contains('INT')").click();
+                  $("a[name='serverSelector']:contains('INT')").click();
                </script>
+            </span>
+            <hr>
+            <span id="gencalc">
+               <h3>Genetics Comparison Calculator (Beta)</h3>
+               <span><a href="gencalc.html" target="_BLANK">Work in progress project</a> to help ratio breeders choose the best foal based on what competition/prix you're trying to win.</span>
             </span>
          </div>
       </div>
