@@ -83,6 +83,7 @@
                   <tr><td><b>Minimum Foal IBS:</b></td><td><span class="cal" id="ibscalculator_min"></span></td></tr>
                   <tr><td><b>Average Foal IBS:</b></td><td><span class="cal" id="ibscalculator_avg"></span></td></tr>
                   <tr><td><b>Maximum Foal IBS:</b></td><td><span class="cal" id="ibscalculator_max"></span></td></tr>
+                  <tr><td>Bolded Adult Skill Range:</td><td><span class="cal" id="ibscalculator_skills"></span></td></tr>
                </table>
                <script>
                   $("#ibscalculator_pagp").on("input", calculateIBS);
@@ -101,9 +102,13 @@
                      var blupM = ((pablup + pbblup) / 2) <= 0 ? 0 : ((pablup + pbblup) / 200)
                      var ibsBase = blupM * ((pagp + pbgp) * (0.1 * tears));
                      var multiplier = 0.04;
+                     var minSkill = (ibsBase - multiplier * ibsBase) + ((pagp + pbgp) / 2) + 129.5;
+                     var maxSkill = (ibsBase + multiplier * ibsBase) + ((pagp + pbgp) / 2) + 129.5;
+                     
                      $("#ibscalculator_min").html((ibsBase - multiplier * ibsBase).toFixed(2));
                      $("#ibscalculator_avg").html((ibsBase).toFixed(2));
                      $("#ibscalculator_max").html((ibsBase + multiplier * ibsBase).toFixed(2));
+                     $("#ibscalculator_skills").html(minSkill.toFixed(2) + ' - ' + maxSkill.toFixed(2));
                   }
                   calculateIBS();
                </script>
@@ -122,7 +127,8 @@
                         <a href="javascript:void(0)" name="serverSelector">US</a> | 
                         <a href="javascript:void(0)" name="serverSelector">DE</a> | 
                         <a href="javascript:void(0)" name="serverSelector">FR</a> | 
-                        <a href="javascript:void(0)" name="serverSelector">SI</a>
+                        <a href="javascript:void(0)" name="serverSelector">SI</a> | 
+                        <a href="javascript:void(0)" name="serverSelector">BR</a>
                         <span style="margin-left: 10px; display: none;" id="gpcalculator_retrieving">Retrieving top GP ...</span>
                      </td>
                   </tr>
@@ -163,7 +169,7 @@
                   
                   function getTopGP()
                   {
-                     const eslFloatLocale = ['DE', 'FR', 'SI'];
+                     const eslFloatLocale = ['DE', 'FR', 'SI', 'BR'];
                      let serverURL = 'www.howrse.com';
                      server = $(this).html();
                      
@@ -174,6 +180,7 @@
                      if (server == "DE")    serverURL = 'www.howrse.de';
                      if (server == "FR")    serverURL = 'www.equideow.com';
                      if (server == "SI")    serverURL = 'www.howrse.si';
+                     if (server == "BR")    serverURL = 'br.howrse.com';
                      
                      $("#gpcalculator_retrieving").show();
                      
