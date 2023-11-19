@@ -128,7 +128,8 @@
                         <a href="javascript:void(0)" name="serverSelector">DE</a> | 
                         <a href="javascript:void(0)" name="serverSelector">FR</a> | 
                         <a href="javascript:void(0)" name="serverSelector">SI</a> | 
-                        <a href="javascript:void(0)" name="serverSelector">BR</a>
+                        <a href="javascript:void(0)" name="serverSelector">BR</a> | 
+                        <a href="javascript:void(0)" name="serverSelector">DK</a>
                         <span style="margin-left: 10px; display: none;" id="gpcalculator_retrieving">Retrieving top GP ...</span>
                      </td>
                   </tr>
@@ -169,7 +170,7 @@
                   
                   function getTopGP()
                   {
-                     const eslFloatLocale = ['DE', 'FR', 'SI', 'BR'];
+                     const eslFloatLocale = ['DE', 'FR', 'SI', 'BR', 'DK'];
                      let serverURL = 'www.howrse.com';
                      server = $(this).html();
                      
@@ -181,6 +182,7 @@
                      if (server == "FR")    serverURL = 'www.equideow.com';
                      if (server == "SI")    serverURL = 'www.howrse.si';
                      if (server == "BR")    serverURL = 'br.howrse.com';
+                     if (server == "DK")    serverURL = 'www.howrse.dk';
                      
                      $("#gpcalculator_retrieving").show();
                      
